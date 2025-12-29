@@ -1,10 +1,10 @@
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect
-from app.websocket import ConnectionManager
-from app.models import FireworkEvent
+from fastapi import FastAPI
+from app.websocket import router as ws_router
 
 app = FastAPI(title="Fireworks 2026 Backend")
 
-manager = ConnectionManager()
+app.include_router(ws_router)
+
 
 
 @app.get("/")
