@@ -1,0 +1,168 @@
+/* ================================
+   GLOBAL RESET
+================================ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #000;
+  font-family: "Segoe UI", Roboto, Arial, sans-serif;
+  color: #ffffff;
+}
+
+/* ================================
+   CANVAS
+================================ */
+#fireworksCanvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: block;
+  z-index: 1;
+  cursor: crosshair;
+}
+
+/* ================================
+   UI OVERLAY
+================================ */
+#ui {
+  position: fixed;
+  inset: 0;
+  pointer-events: none; /* canvas vẫn click được */
+  z-index: 10;
+}
+
+/* ================================
+   COUNTDOWN
+================================ */
+#countdown {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.1rem;
+  letter-spacing: 2px;
+  background: rgba(0, 0, 0, 0.45);
+  padding: 8px 16px;
+  border-radius: 20px;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.08);
+}
+
+#countdown span {
+  font-weight: 600;
+  color: #ffd966;
+}
+
+/* ================================
+   TITLE
+================================ */
+#title {
+  position: absolute;
+  bottom: 120px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+#title h1 {
+  font-size: 2.4rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+#title p {
+  margin-top: 6px;
+  font-size: 0.95rem;
+  opacity: 0.8;
+}
+
+/* ================================
+   CONTROLS
+================================ */
+#controls {
+  position: absolute;
+  bottom: 25px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 14px;
+  padding: 10px 18px;
+  background: rgba(0, 0, 0, 0.45);
+  border-radius: 18px;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.08);
+  pointer-events: auto; /* cho phép click UI */
+}
+
+#controls label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+/* ================================
+   INPUTS
+================================ */
+#controls input[type="color"] {
+  width: 34px;
+  height: 34px;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+#controls select {
+  background: rgba(20, 20, 20, 0.9);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+#controls select:hover {
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+/* ================================
+   RESPONSIVE
+================================ */
+@media (max-width: 768px) {
+  #title h1 {
+    font-size: 1.8rem;
+  }
+
+  #controls {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  #countdown {
+    font-size: 0.9rem;
+  }
+}
+
+/* ================================
+   SUBTLE ANIMATIONS
+================================ */
+@keyframes glow {
+  0%   { box-shadow: 0 0 8px rgba(255, 215, 0, 0.4); }
+  50%  { box-shadow: 0 0 14px rgba(255, 215, 0, 0.7); }
+  100% { box-shadow: 0 0 8px rgba(255, 215, 0, 0.4); }
+}
+
+#countdown {
+  animation: glow 3s infinite ease-in-out;
+}
