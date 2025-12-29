@@ -1,27 +1,19 @@
-from fastapi import WebSocket
-from typing import List
+from fastapi import APIRouter, WebSocket
+import asyncio
+from app.time_utils import get_remaining_seconds
 
+router = APIRouter()
 
-class ConnectionManager:
-    def __init__(self):
-        self.active_connections: List[WebSocket] = []
+@router.websocket("/ws")
+async def websocket_endpoint(ws: WebSocket):
+    await ws.accept()
 
-    async def connect(self, websocket: WebSocket):
-        await websocket.accept()
-        self.active_connections.append(websocket)
+    while True:
+        remaining = get_remaining_seconds()
 
-    def disconnect(self, websocket: WebSocket):
-        if websocket in self.active_connections:
-            self.active_connections.remove(websocket)
+        await ws.send_json({
+            "type": "countdown",
+            "remaining": remaining
+        })
 
-    async def broadcast(self, message: dict):
-        disconnected = []
-        for connection in self.active_connections:
-            try:
-                await connection.send_json(message)
-            except Exception:
-                disconnected.append(connection)
-
-        for ws in disconnected:
-            self.disconnect(ws)
-
+        await asyncio.sleep(1)
