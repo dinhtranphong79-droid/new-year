@@ -9,6 +9,11 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+<audio id="fireworkSound" preload="auto">
+  <source src="assets/audio/fireworks-20629.mp3" type="audio/mpeg">
+</audio>
+
+<button id="startBtn">🎆 Bắt đầu</button>
 
   <!-- COUNTDOWN -->
   <div id="countdown">
@@ -28,6 +33,16 @@
 
   <!-- CANVAS -->
   <canvas id="fireworksCanvas"></canvas>
+<script>
+  const canvas = document.getElementById("fireworksCanvas");
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  window.addEventListener("resize", () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
+</script>
 
   <!-- SCRIPTS (thứ tự QUAN TRỌNG) -->
   <script src="fireworks.js"></script>
@@ -42,6 +57,15 @@
       document.getElementById("time").textContent = `${h}:${m}:${s}`;
     };
   </script>
+<script>
+  document.getElementById("startBtn").onclick = function () {
+    const sound = document.getElementById("fireworkSound");
+    sound.volume = 0.7;
+    sound.play().then(() => sound.pause());
+    this.style.display = "none";
+  };
+</script>
+
 
 </body>
 </html>
