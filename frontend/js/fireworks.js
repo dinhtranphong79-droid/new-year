@@ -2,8 +2,8 @@
    FIREWORKS ENGINE – Fireworks 2026
    Author: Fireworks 2026 Project
 ========================================================= */
-let fireworkIntensity = 0.2;
-let hasCelebrated = false;
+let fireworkIntensity = 0.2;   // mật độ bắn
+let hasCelebrated = false;    // chặn bắn lại khi reload
 
 const GRAVITY = 0.06;
 const FRICTION = 0.99;
@@ -18,6 +18,10 @@ function random(min, max) {
 
 function degToRad(deg) {
   return deg * Math.PI / 180;
+}
+function randomBrightColor() {
+  const colors = ["#ff0044", "#ffcc00", "#00ffcc", "#66ccff", "#ffffff"];
+  return colors[Math.floor(Math.random() * colors.length)];
 }
 
 /* =========================
@@ -213,14 +217,35 @@ class FireworkManager {
 /* =========================
    BOOTSTRAP
 ========================= */
-(function () {
-  const canvas = document.getElementById("fireworksCanvas");
-  const ctx = canvas.getContext("2d");
-  const manager = new FireworkManager(ctx);
+ const canvas = document.getElementById("fireworksCanvas");
+const ctx = canvas.getContext("2d");
+const manager = new FireworkManager(ctx);
+const patternSelect = document.getElementById("patternSelect");
+const colorPicker = document.getElementById("colorPicker");
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
 
+resizeCanvas();
+window.addEventListener("resize", resizeCanvas);
+
+(function () {
   function animate() {
-    ctx.fillStyle = "rgba(0, 0, 0, 0.25)";
+    ctx.fillStyle = "rgba(0, 0, 0, 0.18)";
+
     ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // auto fire
+    if (Math.random() < 0.02 * fireworkIntensity) {
+      manager.launch(
+        Math.random() * canvas.width,
+        Math.random() * canvas.height * 0.5,
+       patternSelect.value,
+randomBrightColor()
+
+      );
+    }
 
     manager.update();
     requestAnimationFrame(animate);
@@ -228,46 +253,70 @@ class FireworkManager {
 
   canvas.addEventListener("click", (e) => {
     const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
-    const color = document.getElementById("colorPicker").value;
-    const pattern = document.getElementById("patternSelect").value;
-
-    manager.launch(x, y, pattern, color);
+    manager.launch(
+      e.clientX - rect.left,
+      e.clientY - rect.top,
+      patternSelect.value,
+      colorPicker.value
+    );
   });
 
   animate();
 })();
+
 /* =========================
    NEW YEAR SPECIAL EFFECT
 ========================= */
 
-let hasCelebrated = false;
+
 
 function launchNewYearBurst() {
-  const bursts = 20;
+  const bursts = 25;
 
   for (let i = 0; i < bursts; i++) {
     setTimeout(() => {
-      const x = Math.random();
-      const y = Math.random() * 0.6;
+      const x = Math.random() * canvas.width;
+      const y = Math.random() * canvas.height * 0.6;
 
-      createFirework({
+      manager.launch(
         x,
         y,
-        color: randomBrightColor(),
-        pattern: "burst"
-      });
-    }, i * 150);
+        ["circle", "spiral", "heart", "text2026"][Math.floor(Math.random() * 4)],
+        randomBrightColor()
+      );
+    }, i * 120);
   }
 }
 
-// 🔥 Được websocket.js gọi
+function playFireworkSound() {
+  const sound = document.getElementById("fireworkSound");
+  if (!sound) return;
+
+  sound.currentTime = 0;
+  sound.volume = 0.7;
+  sound.play().catch(() => {});
+}
+
+/* =========================
+   NEW YEAR – COUNTDOWN CONTROL
+========================= */
+
 window.updateFireworkIntensity = function (remaining) {
+  if (remaining > 60) {
+    fireworkIntensity = 0.2;
+  } else if (remaining > 30) {
+    fireworkIntensity = 0.4;
+  } else if (remaining > 10) {
+    fireworkIntensity = 0.7;
+  } else if (remaining > 0) {
+    fireworkIntensity = 1.0;
+  }
+
+  // 🎆 GIAO THỪA – chỉ bắn 1 lần
   if (remaining <= 0 && !hasCelebrated) {
     hasCelebrated = true;
     console.log("🎆 HAPPY NEW YEAR 2026!");
+    playFireworkSound();
     launchNewYearBurst();
   }
 };
