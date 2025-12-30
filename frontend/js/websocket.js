@@ -32,28 +32,31 @@ class FireworkSocket {
     };
 
     this.socket.onmessage = (event) => {
+      let data;
       try {
-        const data = JSON.parse(event.data);
-        this.handleMessage(data);
-      } catch (e) {
-        console.warn("Invalid WS message", event.data);
+        data = JSON.parse(event.data);
+      } catch {
+        console.warn("⚠️ Invalid WS message", event.data);
+        return;
       }
+
+      this.handleMessage(data);
     };
   }
 
   handleMessage(data) {
     /* =========================
-       ⏱ COUNTDOWN (UTC+11)
+       ⏱ COUNTDOWN (SERVER AUTHORITATIVE)
     ========================= */
-    if (data.type === "countdown") {
+    if (data.type === "countdown" && typeof data.remaining === "number") {
       const remaining = data.remaining;
 
-      // cập nhật đồng hồ
+      // UI countdown
       if (typeof window.updateCountdown === "function") {
         window.updateCountdown(remaining);
       }
 
-      // 🔥 TĂNG CƯỜNG ĐỘ PHÁO HOA THEO THỜI GIAN
+      // intensity + giao thừa logic
       if (typeof window.updateFireworkIntensity === "function") {
         window.updateFireworkIntensity(remaining);
       }
@@ -62,7 +65,7 @@ class FireworkSocket {
     }
 
     /* =========================
-       🎆 FIREWORK EVENT
+       🎆 FIREWORK EVENT (SYNC)
     ========================= */
     if (data.type === "firework" && this.onFireworkEvent) {
       this.onFireworkEvent(data);
@@ -86,13 +89,17 @@ class FireworkSocket {
 }
 
 /* =========================
-   INIT SOCKET
+   INIT SOCKET (GLOBAL)
 ========================= */
 (function initWebSocket() {
-  const WS_URL = "ws://localhost:8000/ws";
+  const WS_URL =
+    location.protocol === "https:"
+      ? "wss://" + location.host + "/ws"
+      : "ws://" + location.host + "/ws";
 
   const socket = new FireworkSocket(WS_URL);
   socket.connect();
 
+  // expose global
   window.fireworkSocket = socket;
 })();
