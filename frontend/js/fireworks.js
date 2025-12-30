@@ -2,6 +2,7 @@
    FIREWORKS ENGINE – Fireworks 2026
    Author: Fireworks 2026 Project
 ========================================================= */
+let fireworkIntensity = 0.2;
 
 const GRAVITY = 0.06;
 const FRICTION = 0.99;
