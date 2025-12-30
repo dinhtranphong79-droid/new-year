@@ -89,7 +89,8 @@ class FireworkSocket {
    INIT SOCKET
 ========================= */
 (function initWebSocket() {
-  const WS_URL = "ws://localhost:8000/ws/fireworks";
+  const WS_URL = "ws://localhost:8000/ws";
+
   const socket = new FireworkSocket(WS_URL);
   socket.connect();
 
