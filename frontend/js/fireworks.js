@@ -3,6 +3,7 @@
    Author: Fireworks 2026 Project
 ========================================================= */
 let fireworkIntensity = 0.2;
+let hasCelebrated = false;
 
 const GRAVITY = 0.06;
 const FRICTION = 0.99;
@@ -238,3 +239,36 @@ class FireworkManager {
 
   animate();
 })();
+/* =========================
+   NEW YEAR SPECIAL EFFECT
+========================= */
+
+let hasCelebrated = false;
+
+function launchNewYearBurst() {
+  const bursts = 20;
+
+  for (let i = 0; i < bursts; i++) {
+    setTimeout(() => {
+      const x = Math.random();
+      const y = Math.random() * 0.6;
+
+      createFirework({
+        x,
+        y,
+        color: randomBrightColor(),
+        pattern: "burst"
+      });
+    }, i * 150);
+  }
+}
+
+// 🔥 Được websocket.js gọi
+window.updateFireworkIntensity = function (remaining) {
+  if (remaining <= 0 && !hasCelebrated) {
+    hasCelebrated = true;
+    console.log("🎆 HAPPY NEW YEAR 2026!");
+    launchNewYearBurst();
+  }
+};
+
