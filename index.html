@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>🎆 Fireworks 2026</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- STYLE -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- COUNTDOWN -->
+  <div id="countdown">
+    <span id="time">00:00:00</span>
+  </div>
+
+  <!-- CONTROLS -->
+  <div id="controls">
+    <input type="color" id="colorPicker" value="#ffcc00" />
+    <select id="patternSelect">
+      <option value="circle">Circle</option>
+      <option value="spiral">Spiral</option>
+      <option value="heart">Heart</option>
+      <option value="text2026">2026</option>
+    </select>
+  </div>
+
+  <!-- CANVAS -->
+  <canvas id="fireworksCanvas"></canvas>
+
+  <!-- SCRIPTS (thứ tự QUAN TRỌNG) -->
+  <script src="fireworks.js"></script>
+  <script src="websocket.js"></script>
+
+  <!-- COUNTDOWN UI -->
+  <script>
+    window.updateCountdown = function (seconds) {
+      const h = String(Math.floor(seconds / 3600)).padStart(2, "0");
+      const m = String(Math.floor((seconds % 3600) / 60)).padStart(2, "0");
+      const s = String(seconds % 60).padStart(2, "0");
+      document.getElementById("time").textContent = `${h}:${m}:${s}`;
+    };
+  </script>
+
+</body>
+</html>
