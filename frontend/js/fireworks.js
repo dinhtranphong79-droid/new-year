@@ -4,6 +4,7 @@
 ========================================================= */
 let fireworkIntensity = 0.2;   // mật độ bắn
 let hasCelebrated = false;    // chặn bắn lại khi reload
+let afterParty = false; // 🎉 chế độ ăn mừng sau giao thừa
 
 const GRAVITY = 0.06;
 const FRICTION = 0.99;
@@ -237,15 +238,22 @@ window.addEventListener("resize", resizeCanvas);
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     // auto fire
-    if (Math.random() < 0.02 * fireworkIntensity) {
-      manager.launch(
-        Math.random() * canvas.width,
-        Math.random() * canvas.height * 0.5,
-       patternSelect.value,
-randomBrightColor()
+   let autoRate = fireworkIntensity * 0.02;
 
-      );
-    }
+if (afterParty) {
+  autoRate = 0.06; // 🎉 after-party bắn đều
+}
+
+if (Math.random() < autoRate) {
+  manager.launch(
+    Math.random() * canvas.width,
+    Math.random() * canvas.height * 0.5,
+    patternSelect.value,
+    randomBrightColor()
+  );
+}
+
+     
 
     manager.update();
     requestAnimationFrame(animate);
@@ -320,4 +328,8 @@ window.updateFireworkIntensity = function (remaining) {
     launchNewYearBurst();
   }
 };
-
+  // Nếu mở trang SAU giao thừa
+  if (remaining <= 0 && hasCelebrated) {
+    afterParty = true;
+  }
+};
