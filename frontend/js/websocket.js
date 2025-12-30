@@ -1,6 +1,5 @@
 /* =========================================================
    WEBSOCKET CLIENT – Fireworks 2026
-   Kết nối realtime tới backend FastAPI
 ========================================================= */
 
 class FireworkSocket {
@@ -43,16 +42,28 @@ class FireworkSocket {
   }
 
   handleMessage(data) {
-    /*
-      Format chuẩn:
-      {
-        type: "firework",
-        x: 0.5,        // normalized 0–1
-        y: 0.6,
-        color: "#ffcc00",
-        pattern: "circle"
+    /* =========================
+       ⏱ COUNTDOWN (UTC+11)
+    ========================= */
+    if (data.type === "countdown") {
+      const remaining = data.remaining;
+
+      // cập nhật đồng hồ
+      if (typeof window.updateCountdown === "function") {
+        window.updateCountdown(remaining);
       }
-    */
+
+      // 🔥 TĂNG CƯỜNG ĐỘ PHÁO HOA THEO THỜI GIAN
+      if (typeof window.updateFireworkIntensity === "function") {
+        window.updateFireworkIntensity(remaining);
+      }
+
+      return;
+    }
+
+    /* =========================
+       🎆 FIREWORK EVENT
+    ========================= */
     if (data.type === "firework" && this.onFireworkEvent) {
       this.onFireworkEvent(data);
     }
@@ -61,16 +72,16 @@ class FireworkSocket {
   sendFirework(x, y, color, pattern) {
     if (!this.connected) return;
 
-    const payload = {
-      type: "firework",
-      x,
-      y,
-      color,
-      pattern,
-      timestamp: Date.now()
-    };
-
-    this.socket.send(JSON.stringify(payload));
+    this.socket.send(
+      JSON.stringify({
+        type: "firework",
+        x,
+        y,
+        color,
+        pattern,
+        timestamp: Date.now()
+      })
+    );
   }
 }
 
@@ -78,12 +89,9 @@ class FireworkSocket {
    INIT SOCKET
 ========================= */
 (function initWebSocket() {
-  // ⚠️ đổi URL khi deploy
   const WS_URL = "ws://localhost:8000/ws/fireworks";
-
   const socket = new FireworkSocket(WS_URL);
   socket.connect();
 
-  // expose global để fireworks.js dùng
   window.fireworkSocket = socket;
 })();
