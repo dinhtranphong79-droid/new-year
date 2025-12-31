@@ -310,6 +310,15 @@ function playFireworkSound() {
 ========================= */
 
 window.updateFireworkIntensity = function (remaining) {
+
+  // 🔁 Nếu MỞ TRANG SAU GIAO THỪA
+  if (remaining <= 0 && hasCelebrated) {
+    afterParty = true;
+    fireworkIntensity = 0.5;
+    return;
+  }
+
+  // ⏱ ĐANG ĐẾM NGƯỢC
   if (remaining > 60) {
     fireworkIntensity = 0.2;
   } else if (remaining > 30) {
@@ -320,16 +329,14 @@ window.updateFireworkIntensity = function (remaining) {
     fireworkIntensity = 1.0;
   }
 
-  // 🎆 GIAO THỪA – chỉ bắn 1 lần
+  // 🎆 GIAO THỪA – CHỈ 1 LẦN DUY NHẤT
   if (remaining <= 0 && !hasCelebrated) {
     hasCelebrated = true;
+    afterParty = true;
+
     console.log("🎆 HAPPY NEW YEAR 2026!");
     playFireworkSound();
     launchNewYearBurst();
   }
 };
-  // Nếu mở trang SAU giao thừa
-  if (remaining <= 0 && hasCelebrated) {
-    afterParty = true;
-  }
-};
+
