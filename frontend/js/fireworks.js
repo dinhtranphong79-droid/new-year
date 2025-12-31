@@ -339,4 +339,20 @@ window.updateFireworkIntensity = function (remaining) {
     launchNewYearBurst();
   }
 };
+// ===============================
+// FALLBACK COUNTDOWN (GitHub Pages)
+// ===============================
+if (!window.fireworkSocket) {
+  let fakeRemaining = 20; // demo
+
+  setInterval(() => {
+    if (fakeRemaining >= -5) {
+      window.updateFireworkIntensity(fakeRemaining);
+      if (window.updateCountdown) {
+        window.updateCountdown(Math.max(fakeRemaining, 0));
+      }
+      fakeRemaining--;
+    }
+  }, 1000);
+}
 
